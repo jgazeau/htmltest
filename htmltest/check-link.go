@@ -117,6 +117,11 @@ func (hT *HTMLTest) checkExternal(ref *htmldoc.Reference) {
 		return
 	}
 
+	// Does this url match an url include rule?
+	if !hT.opts.isURLIncluded(urlStr) {
+		return
+	}
+
 	if hT.opts.StripQueryString && !InList(hT.opts.StripQueryExcludes, urlStr) {
 		urlStr = htmldoc.URLStripQueryString(urlStr)
 	}

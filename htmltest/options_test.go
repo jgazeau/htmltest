@@ -57,3 +57,21 @@ func TestIsURLIgnored(t *testing.T) {
 	assert.IsFalse(t, "url left alone", hT.opts.isURLIgnored("https://froogle.com/?q=1234"))
 	assert.IsFalse(t, "url left alone", hT.opts.isURLIgnored("http://assetstore.info/lib/test.js"))
 }
+
+func TestIsURLIncluded(t *testing.T) {
+	userOpts := map[string]interface{}{
+		"IncludeURLs": []interface{}{"google.com", "test.example.com",
+			"library.com", "//\\w+.assetstore.info/lib/"},
+		"NoRun": true,
+	}
+
+	hT, err := Test(userOpts)
+	output.CheckErrorPanic(err)
+
+	assert.IsTrue(t, "url included", hT.opts.isURLIncluded("https://google.com/?q=1234"))
+	assert.IsTrue(t, "url included", hT.opts.isURLIncluded("https://test.example.com/"))
+	assert.IsTrue(t, "url included", hT.opts.isURLIncluded("https://www.library.com/page"))
+	assert.IsTrue(t, "url included", hT.opts.isURLIncluded("https://cdn.assetstore.info/lib/test.js"))
+	assert.IsFalse(t, "url left alone", hT.opts.isURLIncluded("https://froogle.com/?q=1234"))
+	assert.IsFalse(t, "url left alone", hT.opts.isURLIncluded("http://assetstore.info/lib/test.js"))
+}

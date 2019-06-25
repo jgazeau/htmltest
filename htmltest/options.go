@@ -40,6 +40,8 @@ type Options struct {
 	IgnoreURLs []interface{}
 	IgnoreDirs []interface{}
 
+	IncludeURLs []interface{}
+
 	IgnoreInternalEmptyHash             bool
 	IgnoreEmptyHref                     bool
 	IgnoreCanonicalBrokenLinks          bool
@@ -102,6 +104,8 @@ func DefaultOptions() map[string]interface{} {
 
 		"IgnoreURLs": []interface{}{},
 		"IgnoreDirs": []interface{}{},
+
+		"IncludeURLs": []interface{}{},
 
 		"IgnoreInternalEmptyHash":             false,
 		"IgnoreEmptyHref":                     false,
@@ -178,4 +182,17 @@ func (opts *Options) isURLIgnored(url string) bool {
 		}
 	}
 	return false
+}
+
+// Is the given URL included by the current configuration
+// If IncludeURLs is an empty array then return true by default to accept all URLs
+func (opts *Options) isURLIncluded(url string) bool {
+	var isIncludedByDefault bool = true
+	for _, item := range opts.IncludeURLs {
+		if ok, _ := regexp.MatchString(item.(string), url); ok {
+			return true
+		}
+		isIncludedByDefault = false
+	}
+	return isIncludedByDefault
 }

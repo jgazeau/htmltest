@@ -50,6 +50,11 @@ func (hT *HTMLTest) enforceHTTPS(ref *htmldoc.Reference) {
 		return
 	}
 
+	// Does this url match an url include rule?
+	if !hT.opts.isURLIncluded(ref.URLString()) {
+		return
+	}
+
 	if hT.opts.EnforceHTTPS {
 		hT.issueStore.AddIssue(issues.Issue{
 			Level:     issues.LevelError,
